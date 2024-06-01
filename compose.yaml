@@ -1,0 +1,44 @@
+version: '3.0'
+
+services:
+
+  frontend:
+    image: stanislav1502/forum-fr
+    build: ../forum-frontend
+    networks:
+      - forum-net
+    container_name: fr-frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+
+  backend:
+    image: stanislav1502/forum-bk
+    build: ../forum-backend
+    networks:
+      - forum-net
+    container_name: fr-backend
+    ports:
+      - "7211:8080"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: fr-postgres
+    networks:
+      - forum-net
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+networks:
+  forum-net:
